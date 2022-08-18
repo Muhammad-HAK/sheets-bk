@@ -8,9 +8,10 @@ const { router } = require('./routes')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => res.send('App is up!'))
+app.get('/', (req, res) => res.send('API is up!'))
 
-app.use('/sheet', router)
+app.use('/api' || '/api/user', require('./routes/users.routes'))
+app.use('/api/sheet', require('./routes/sheets.routes'))
 
 app.listen(3000, () => console.log('Sheets app listening on port 3000!'))
 

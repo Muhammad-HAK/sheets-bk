@@ -3,8 +3,6 @@ const Utils = require('../utils');
 
 const createSheet = async (content) => {
     const res = await SheetsModel.create(content);
-    console.log('///////////////');
-    console.log(res);
     return res;
 }
 

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const connect = async () => {
     //Set up default mongoose connection
-    const mongoDB = 'mongodb://127.0.0.1/sheets';
+    const mongoDB = `${process.env.MONGO_URI}/sheets`;
     mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
     
     //Get the default connection

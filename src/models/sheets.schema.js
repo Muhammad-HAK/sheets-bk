@@ -8,9 +8,11 @@ const Header = new Schema({
 });
 
 const Sheet = new Schema({
+  creatorId: {type: mongoose.Types.ObjectId, required: true},
   name: {type: String, required: true},
   header: [Header],
   data: [Object],
+  members: [mongoose.Types.ObjectId],
 },
 {
   timestamps: true
