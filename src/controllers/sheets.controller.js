@@ -7,7 +7,7 @@ const getSheets = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while fetching sheets!'})
   }
 }
 
@@ -19,7 +19,22 @@ const getSheet = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while fetching sheet!'})
+  }
+}
+
+const getSheetsByUser = async (req, res, next) => {
+  const id = req.query.id;
+  try {
+    const [ ownedSheets, sharedSheets ] = await Promise.all([
+      SheetsService.getSheetsByUser(id),
+      SheetsService.getSheetsSharedToUser(id)
+    ])
+    res.json([...ownedSheets, ...sharedSheets])
+    next()
+  } catch(e) {
+    console.log(e.message)
+    res.status(500).json({error: true, status: 500, message: 'Error while fetching sheets by user!'})
   }
 }
 
@@ -31,7 +46,7 @@ const createSheet = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while creating sheet!'})
   }
 }
 
@@ -44,7 +59,20 @@ const updateSheet = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while updating sheet!'})
+  }
+}
+
+const assignSheet = async (req, res, next) => {
+  const sheetId = req.query.sheetId;
+  const assigneeId = req.query.assigneeId;
+  try {
+    const response = await SheetsService.assignSheet(sheetId, assigneeId)
+    res.json(response)
+    next()
+  } catch(e) {
+    console.log(e.message)
+    res.status(500).json({error: true, status: 500, message: 'Error while assignment!'})
   }
 }
 
@@ -57,7 +85,7 @@ const updateSheetHeader = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while updating headers!'})
   }
 }
 
@@ -70,7 +98,7 @@ const updateSheetData = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while updating data!'})
   }
 }
 
@@ -83,7 +111,7 @@ const updateSheetName = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while updating sheet name!'})
   }
 }
 
@@ -95,7 +123,7 @@ const deleteSheet = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while deleting sheet!'})
   }
 }
 
@@ -104,8 +132,10 @@ module.exports = {
   getSheet,
   createSheet,
   updateSheet,
+  assignSheet,
   updateSheetHeader,
   updateSheetData,
   updateSheetName,
   deleteSheet,
+  getSheetsByUser,
 }

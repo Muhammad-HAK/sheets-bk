@@ -45,6 +45,18 @@ const getSheet = async (sheetId) => {
     const targetId = isValid ? sheetId : Utils.stringToMongoObj(sheetId);
     return await SheetsModel.findById(targetId);
 }
+
+const getSheetsByUser = async (userId) => {
+    const isValid = Utils.isObjectId(userId);
+    const targetId = isValid ? userId : Utils.stringToMongoObj(userId);
+    return await SheetsModel.find({creatorId: targetId});
+}
+
+const getSheetsSharedToUser = async (userId) => {
+    const isValid = Utils.isObjectId(userId);
+    const targetId = isValid ? userId : Utils.stringToMongoObj(userId);
+    return await SheetsModel.find({members: targetId});
+}
   
   module.exports = {
     createSheet,
@@ -55,4 +67,6 @@ const getSheet = async (sheetId) => {
     deleteSheet,
     getSheets,
     getSheet,
+    getSheetsByUser,
+    getSheetsSharedToUser
   }

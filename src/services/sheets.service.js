@@ -1,4 +1,5 @@
 const { SheetsDb } = require('../db')
+const Utils = require('../utils')
 
 const createSheet = async (content) => {
   try {
@@ -10,6 +11,17 @@ const createSheet = async (content) => {
 const updateSheet = async (id, content) => {
   try {
     return await SheetsDb.updateSheet(id, content)
+  } catch(e) {
+    throw new Error(e.message)
+  }
+}
+const assignSheet = async (sheetId, assigneeId) => {
+  try {
+    const sheet = await SheetsDb.getSheet(sheetId)
+    const members = sheet.members || [];
+    members.push(Utils.stringToMongoObj(assigneeId));
+    sheet.members = members;
+    return await SheetsDb.updateSheet(sheetId, sheet)
   } catch(e) {
     throw new Error(e.message)
   }
@@ -49,6 +61,20 @@ const getSheet = async (sheetId) => {
     throw new Error(e.message)
   }
 }
+const getSheetsByUser = async (userId) => {
+  try {
+    return await SheetsDb.getSheetsByUser(userId)
+  } catch(e) {
+    throw new Error(e.message)
+  }
+}
+const getSheetsSharedToUser = async (userId) => {
+  try {
+    return await SheetsDb.getSheetsSharedToUser(userId)
+  } catch(e) {
+    throw new Error(e.message)
+  }
+}
 const getSheets = async () => {
   try {
     return await SheetsDb.getSheets()
@@ -66,4 +92,7 @@ module.exports = {
   updateSheetData,
   updateSheetName,
   deleteSheet,
+  getSheetsByUser,
+  getSheetsSharedToUser,
+  assignSheet,
 }

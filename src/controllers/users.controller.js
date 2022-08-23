@@ -10,7 +10,7 @@ const getUsers = async (req, res, next) => {
       next()
     } catch(e) {
       console.log(e.message)
-      res.sendStatus(500) && next(error)
+      res.status(500).json({error: true, status: 500, message: 'Error while fetching users!'})
     }
   }
   
@@ -22,7 +22,19 @@ const getUsers = async (req, res, next) => {
       next()
     } catch(e) {
       console.log(e.message)
-      res.sendStatus(500) && next(error)
+      res.status(500).json({error: true, status: 500, message: 'Error while fetching user!'})
+    }
+  }
+
+  const getUserByEmail = async (req, res, next) => {
+    const email = req.query.email;
+    try {
+      const response = await UsersService.getUserByEmail(email)
+      res.json(response)
+      next()
+    } catch(e) {
+      console.log(e.message)
+      res.status(500).json({error: true, status: 500, message: 'Error while fetching user!'})
     }
   }
   
@@ -31,9 +43,10 @@ const getUsers = async (req, res, next) => {
     try {
       // check if user exists
       const userExists = await UsersService.getUserByEmail(email)
-      if (!userExists && !userExists._id) {
-        console.log('User with this email does not exist!')
-        res.sendStatus(500) && next(error)
+      if (!userExists || !userExists._id) {
+        const message = 'User with this email does not exist!';
+        console.log(message)
+        res.status(400).json({error: true, status: 400, message})
         return
       }
       const user = await UsersService.getUserByEmail(email)
@@ -48,14 +61,15 @@ const getUsers = async (req, res, next) => {
           }
         })
       } else {
-        console.log('Wrong credentials!')
-        res.sendStatus(500) && next(error)
+        const message = 'Wrong credentials!';
+        console.log(message)
+        res.status(400).json({error: true, status: 400, message})
         return
       }
       next()
     } catch(e) {
       console.log(e.message)
-      res.sendStatus(500) && next(error)
+      res.status(500).json({error: true, status: 500, message: 'Error while login!'})
     }
   }
 
@@ -64,24 +78,27 @@ const getUsers = async (req, res, next) => {
     try {
       // validating data
       if (!name || !email || !password) {
-        console.log('Please enter all required details!')
-        res.sendStatus(500) && next(error)
+        const message = 'Please enter all required details!';
+        console.log(message)
+        res.status(400).json({error: true, status: 400, message})
         return
       }
       if (!Utils.ValidateEmail(email)) {
-        console.log('Please enter a valid email!')
-        res.sendStatus(500) && next(error)
+        const message = 'Please enter a valid email!';
+        console.log(message)
+        res.status(400).json({error: true, status: 400, message})
         return
       }
       // checking if user already exists
       const userExists = await UsersService.getUserByEmail(email);
       if (userExists && userExists._id) {
-        console.log('User with this email already exists!')
-        res.sendStatus(500) && next(error)
+        const message = 'User with this email already exists!'
+        console.log(message)
+        res.status(400).json({error: true, status: 400, message})
         return
       }
       // hashing password
-      const salt = await BCRYPT.salt(10);
+      const salt = await BCRYPT.genSalt(10);
       const hashPassword = await BCRYPT.hash(password, salt);
       // creating the user
       const user = {
@@ -101,7 +118,7 @@ const getUsers = async (req, res, next) => {
       next()
     } catch(e) {
       console.log(e.message)
-      res.sendStatus(500) && next(error)
+      res.status(500).json({error: true, status: 500, message: 'Error while creating user!'})
     }
   }
   
@@ -114,7 +131,7 @@ const getUsers = async (req, res, next) => {
       next()
     } catch(e) {
       console.log(e.message)
-      res.sendStatus(500) && next(error)
+      res.status(500).json({error: true, status: 500, message: 'Error while updating user!'})
     }
   }
   
@@ -126,13 +143,14 @@ const getUsers = async (req, res, next) => {
     next()
   } catch(e) {
     console.log(e.message)
-    res.sendStatus(500) && next(error)
+    res.status(500).json({error: true, status: 500, message: 'Error while deleting user!'})
   }
 }
 
 module.exports = {
     getUsers,
     getUserById,
+    getUserByEmail,
     createUser,
     login,
     updateUser,

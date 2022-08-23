@@ -1,10 +1,10 @@
 //Import the mongoose module
 const mongoose = require('mongoose');
-
+const { endPoint } = require('../config')
 
 const connect = async () => {
     //Set up default mongoose connection
-    const mongoDB = `${process.env.MONGO_URI}/sheets`;
+    const mongoDB = `${endPoint}/sheets`;
     mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
     
     //Get the default connection

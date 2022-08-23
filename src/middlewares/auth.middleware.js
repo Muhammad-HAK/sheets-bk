@@ -15,11 +15,11 @@ const protect = async (req, res, next) => {
         }
     } catch (e) {
         console.log(e.message)
-        res.sendStatus(401) && next(error)
+        res.status(401).json({error: true, status: 401, message: 'Authentication denied!'})
     }
     if (!token) {
         console.log('Not token, no authorization.')
-        res.sendStatus(401) && next(error)
+        res.status(401).json({error: true, status: 401, message: 'Request token missing!'})
     }
 }
 
